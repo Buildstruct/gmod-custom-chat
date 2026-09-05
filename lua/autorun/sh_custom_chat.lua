@@ -86,7 +86,21 @@ if CLIENT then
         "Should the SteamID be visible when showing join/leave messages?", 0, 1 )
 end
 
+if SERVER then
+    CreateConVar( "custom_chat_server_log_method", "0", bit.bor( FCVAR_ARCHIVE, FCVAR_NOTIFY ),
+        "Set the logging method to be used server-side. 0 for MsgC only, 1 for MsgC & ServerLog, 2 for ServerLog only.", 0, 2 )
+end
+
 function CustomChat.Print( str, ... )
+    if SERVER then
+        local logMethod = CustomChat.GetConVarInt( "server_log_method", 0 )
+
+        if logMethod > 0 then
+            ServerLog( "[Custom Chat] " .. string.format( str, ... ) .. "\n" )
+            if logMethod == 2 then return end
+        end
+    end
+
     MsgC( Color( 0, 123, 255 ), "[Custom Chat] ", Color( 255, 255, 255 ), string.format( str, ... ), "\n" )
 end
 
@@ -226,6 +240,7 @@ if SERVER then
     AddCSLuaFile( "custom_chat/client/tags.lua" )
     AddCSLuaFile( "custom_chat/client/theme.lua" )
     AddCSLuaFile( "custom_chat/client/whitelist.lua" )
+    AddCSLuaFile( "custom_chat/client/multipart.lua" )
 
     AddCSLuaFile( "custom_chat/client/vgui/chat_frame.lua" )
     AddCSLuaFile( "custom_chat/client/vgui/chat_history.lua" )
@@ -253,6 +268,7 @@ if CLIENT then
     include( "custom_chat/client/tags.lua" )
     include( "custom_chat/client/theme.lua" )
     include( "custom_chat/client/whitelist.lua" )
+    include( "custom_chat/client/multipart.lua" )
 
     include( "custom_chat/client/vgui/chat_frame.lua" )
     include( "custom_chat/client/vgui/chat_history.lua" )
