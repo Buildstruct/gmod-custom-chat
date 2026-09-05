@@ -17,7 +17,8 @@ local rangeTypes = {
     { type = "italic", pattern = "%*[^%c][^%*]+%*" },
     { type = "bold", pattern = "%*%*[^%c][^%*]+%*%*" },
     { type = "bold_italic", pattern = "%*%*%*[^%c][^%*]+%*%*%*" },
-    { type = "color", pattern = "<%d+,%d+,%d+>" },
+    { type = "color", pattern = "<%d+,%s*%d+,%s*%d+>" },
+	{ type = "colorhex", pattern = "<#?%x+%x+%x+>" },
     { type = "rainbow", pattern = "%$%$[^%c]+%$%$" },
     { type = "advert", pattern = "%[%[[^%c]+%]%]" },
     { type = "emoji", pattern = ":[%w_%-]+:" },
@@ -34,6 +35,7 @@ local allowColor = false
 -- on this str, then returns them in a array.
 local function FindAllRangesOfType( rangeType, str )
     if not allowColor and rangeType.type == "color" then return {} end
+    if not allowColor and rangeType.type == "colorhex" then return {} end
 
     local ranges = {}
     local pStart, pEnd = 1, 0

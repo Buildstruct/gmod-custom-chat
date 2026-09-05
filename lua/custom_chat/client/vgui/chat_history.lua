@@ -850,6 +850,15 @@ elTimestamp.textContent = '%s ';
                 ctx.color = b.value -- color table
             end
 
+		elseif b.type == "colorhex" then 
+			-- Same as color, but uses hex
+			if type( b.value ) == "string" then 
+				local colorStr = ChopEnds( b.value, 2 )
+				ctx.color = HexToColor( colorStr )
+            else
+                ctx.color = b.value -- color table
+            end
+
         else
             local func = blockTypes[b.type]
 
